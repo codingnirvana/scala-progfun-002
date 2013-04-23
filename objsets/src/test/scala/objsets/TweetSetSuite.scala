@@ -75,4 +75,13 @@ class TweetSetSuite extends FunSuite {
       assert(trends.head.user == "a" || trends.head.user == "b")
     }
   }
+
+  test("Google & Apple Tweets") {
+    new TestSets {
+      assert(size(TweetReader.allTweets) == 695)
+      assert(size(GoogleVsApple.googleTweets) == 38)
+      assert(size(GoogleVsApple.appleTweets) == 150)
+      println(GoogleVsApple.trending.head)
+    }
+  }
 }
