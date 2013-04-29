@@ -123,7 +123,15 @@ object Huffman {
   def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
     case List() => List()
     case t if singleton(trees) => t
-    case left :: right :: xs => makeCodeTree(left, right) :: xs
+    case left :: right :: xs => insertCT(makeCodeTree(left, right),xs) // makeCodeTree(left, right) :: xs
+  }
+
+  private def insertCT(current: CodeTree, trees: List[CodeTree]) : List[CodeTree] = trees match {
+    case List() => List(current)
+    case ct :: tail => ct match {
+      case Leaf(_,w) => if (weight(current) < w) current :: trees else ct :: insertCT(current, tail)
+      case Fork(_,_,_,w) => if (weight(current) < w) current :: trees else ct :: insertCT(current, tail)
+    }
   }
 
 
@@ -174,14 +182,14 @@ object Huffman {
   def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
 
     def decode(r : CodeTree,t : CodeTree, x: List[Bit]) : List[Char] = (x, t) match {
-      case (List(),_) => List()
       case (b :: xs, Fork(left, right, _,_)) =>
         if (b == 0)
           decode (r, left, xs)
         else
           decode (r, right, xs)
-      case (b :: xs, Leaf(c,_)) =>
-         c :: decode(r, r, xs)
+      case (_, Leaf(c,_)) =>
+         c :: decode(r, r, x)
+      case (List(),_) => List()
     }
 
     decode(tree, tree, bits)

@@ -49,12 +49,13 @@ class HuffmanSuite extends FunSuite {
 
   test("codetree of t1") {
     new TestTrees {
-      println(decodedSecret)
-
       val treeInExample: CodeTree = createCodeTree(List('a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'd','e', 'f', 'g', 'h'))
-      assert(decode(treeInExample, List(1,0,0,0,1,0,1,0)) == List('b','a','c'))
+      assert(decode(treeInExample, List(1,0,0,0,1,0,1,0)) === List('b','a','c'))
     }
+  }
 
+  test("should decode secret") {
+    assert(decodedSecret === List('h','u', 'f', 'f','m', 'a','n', 'e', 's', 't', 'c', 'o', 'o', 'l'))
   }
 
   test("decode and encode a very short text should be identity") {
