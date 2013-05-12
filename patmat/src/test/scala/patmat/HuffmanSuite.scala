@@ -6,6 +6,9 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 import patmat.Huffman._
+import scala._
+import patmat.Huffman.Leaf
+import patmat.Huffman.Fork
 
 @RunWith(classOf[JUnitRunner])
 class HuffmanSuite extends FunSuite {
@@ -50,12 +53,24 @@ class HuffmanSuite extends FunSuite {
   test("codetree of t1") {
     new TestTrees {
       val treeInExample: CodeTree = createCodeTree(List('a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'd','e', 'f', 'g', 'h'))
-      assert(decode(treeInExample, List(1,0,0,0,1,0,1,0)) === List('b','a','c'))
+      assert(encode(treeInExample)(List('a','b','c')) === List(1,0,1,0,0,0,0,0,0,0))
+      assert(encode(treeInExample)(List('b','a','c')) === List(0, 1, 1, 0, 0, 0, 0, 0, 0, 0))
+      assert(decode(treeInExample, List(0, 1, 1, 0, 0, 0, 0, 0, 0, 0)) === List('b','a','c'))
     }
   }
 
   test("should decode secret") {
     assert(decodedSecret === List('h','u', 'f', 'f','m', 'a','n', 'e', 's', 't', 'c', 'o', 'o', 'l'))
+  }
+
+  test("should encode, decode secret") {
+    assert(encode(frenchCode)(List('h','u', 'f', 'f','m', 'a','n', 'e', 's', 't', 'c', 'o', 'o', 'l')) === secret)
+    assert(quickEncode(frenchCode)(List('h','u', 'f', 'f','m', 'a','n', 'e', 's', 't', 'c', 'o', 'o', 'l')) === secret)
+  }
+
+  test("should quick encode, decode secret") {
+    val treeInExample: CodeTree = createCodeTree(List('a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'd','e', 'f', 'g', 'h'))
+    assert(quickEncode(treeInExample)(List('a','b','c')) === List(1,0,1,0,0,0,0,0,0,0))
   }
 
   test("decode and encode a very short text should be identity") {
