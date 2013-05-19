@@ -43,25 +43,61 @@ class BloxorzSuite extends FunSuite {
   test("terrain function level 1") {
     new Level1 {
       assert(terrain(Pos(0,0)), "0,0")
+      assert(terrain(Pos(2,0)), "2,0")
+      assert(terrain(Pos(5,8)), "5,8")
+
       assert(!terrain(Pos(4,11)), "4,11")
+      assert(!terrain(Pos(3,0)), "3,0")
+      assert(!terrain(Pos(5,9)), "5,9")
+      assert(!terrain(Pos(5,10)), "5,10")
     }
   }
 
   test("findChar level 1") {
     new Level1 {
-      assert(startPos == Pos(1,1))
+      assert(startPos === Pos(1,1))
+      assert(goal === Pos(4,7))
+    }
+  }
+
+  test("neighbors with history") {
+    new Level1 {
+      val history = neighborsWithHistory(Block(Pos(1, 1), Pos(1, 1)), List(Left, Up))
+      val expectedHistory = Set(
+        (Block(Pos(1,2),Pos(1,3)), List(Right,Left,Up)),
+        (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+      )
+      assert(history.toSet === expectedHistory)
+    }
+  }
+
+  test("new neighbors with history to avoid circles") {
+    new Level1 {
+      val newNeighbors: Stream[(this.type#Block, List[this.type#Move])] = newNeighborsOnly(
+        Set(
+          (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+          (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+        ).toStream,
+
+        Set(Block(Pos(1, 2), Pos(1, 3)), Block(Pos(1, 1), Pos(1, 1)))
+      )
+      val expectedNewNeighbors = Set(
+        (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+      ).toStream
+
+      assert(newNeighbors === expectedNewNeighbors)
     }
   }
 
   test("optimal solution for level 1") {
     new Level1 {
-      assert(solve(solution) == Block(goal, goal))
+      assert(solve(solution) === Block(goal, goal))
     }
   }
 
   test("optimal solution length for level 1") {
     new Level1 {
-      assert(solution.length == optsolution.length)
+      assert(solution.length === optsolution.length)
     }
   }
 }
