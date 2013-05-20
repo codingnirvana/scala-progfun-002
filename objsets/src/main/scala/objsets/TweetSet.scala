@@ -191,9 +191,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   override def toString = "{" + left + elem + right + "}"
 
   def mostRetweeted: Tweet = {
-    val emptyTweet = new Tweet("", "", 0)
-    val l = if (left.isEmpty) emptyTweet else left.mostRetweeted
-    val r = if (right.isEmpty) emptyTweet else right.mostRetweeted
+    val l = if (left.isEmpty) this.elem else left.mostRetweeted
+    val r = if (right.isEmpty) this.elem else right.mostRetweeted
     if (elem.retweets > l.retweets && elem.retweets > r.retweets)
       elem
     else if (l.retweets > r.retweets)
