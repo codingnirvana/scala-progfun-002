@@ -81,7 +81,14 @@ class TweetSetSuite extends FunSuite {
       assert(size(TweetReader.allTweets) == 695)
       assert(size(GoogleVsApple.googleTweets) == 38)
       assert(size(GoogleVsApple.appleTweets) == 150)
-      println(GoogleVsApple.trending.head)
+      val tweet1: Tweet = new Tweet("gizmodo", "iPhone 5's brain dissected. Guess what, it's made by Samsung. http://t.co/wSyjvpDc", 321)
+      val tweet2: Tweet = new Tweet("gizmodo", "Warning: Security bug can wipe out your Android phone just by visiting a web page-not only limited to Samsung http://t.co/0y6vnOKw", 290)
+      assert(GoogleVsApple.trending.head.text === tweet1.text)
+      assert(GoogleVsApple.trending.head.user === tweet1.user)
+      assert(GoogleVsApple.trending.head.retweets === tweet1.retweets)
+      assert(GoogleVsApple.trending.tail.head.text === tweet2.text)
+      assert(GoogleVsApple.trending.tail.head.user === tweet2.user)
+      assert(GoogleVsApple.trending.tail.head.retweets === tweet2.retweets)
     }
   }
 }
